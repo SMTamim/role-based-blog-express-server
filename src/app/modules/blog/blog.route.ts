@@ -17,6 +17,7 @@ router.post(
 
 router.patch(
   '/:id',
+  auth('user'),
   validateRequest(BlogValidations.blogValidationSchema),
   BlogControllers.updateBlog,
 );

@@ -24,7 +24,7 @@ const createBlog = catchAsync(async (req, res) => {
 });
 
 const updateBlog = catchAsync(async (req, res) => {
-  const { blogId } = req.params;
+  const { id: blogId } = req.params;
   const result = await BlogServices.updateBlogIntoDB(
     req.user,
     blogId,

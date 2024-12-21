@@ -4,6 +4,8 @@ import { Blog } from './blog.model';
 import AppError from '../../error/AppError';
 import httpStatus from 'http-status';
 import { User } from '../user/user.model';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { blogSearchAbleFields } from './blog.constant';
 
 const createBlogIntoDB = async (userPayload: JwtPayload, payload: TBlog) => {
   const user = await User.findOne({ email: userPayload.email });
@@ -29,12 +31,15 @@ const createBlogIntoDB = async (userPayload: JwtPayload, payload: TBlog) => {
 };
 
 const fetchAllBlogsFromDB = async (query: Record<string, unknown>) => {
-  return await Blog.find({})
-    .populate({
-      path: 'author',
-      select: '_id name email',
-    })
-    .lean();
+  const blogQuery = new QueryBuilder(Blog.find({}), query)
+    .search(blogSearchAbleFields)
+    .filter()
+    .sort();
+  const result = await blogQuery.modelQuery.populate({
+    path: 'author',
+    select: '_id name email',
+  });
+  return result;
 };
 
 const updateBlogIntoDB = async (

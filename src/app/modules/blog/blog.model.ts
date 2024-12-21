@@ -2,29 +2,34 @@ import { model, Schema } from 'mongoose';
 import { TBlog, TBlogModel } from './blog.interface';
 import { User } from '../user/user.model';
 
-const blogSchema = new Schema<TBlog>({
-  title: {
-    type: String,
-    required: true,
+const blogSchema = new Schema<TBlog>(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    content: {
+      type: String,
+      required: true,
+    },
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    isPublished: {
+      type: Boolean,
+      default: true,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
-  content: {
-    type: String,
-    required: true,
+  {
+    timestamps: true,
   },
-  author: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  isPublished: {
-    type: Boolean,
-    default: true,
-  },
-  isDeleted: {
-    type: Boolean,
-    default: false,
-  },
-});
+);
 
 blogSchema.statics.isBlogExist = async function (
   id: string,

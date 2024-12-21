@@ -1,4 +1,4 @@
-import { Query } from 'mongoose';
+import { FilterQuery, Query } from 'mongoose';
 
 class QueryBuilder<T> {
   constructor(
@@ -20,25 +20,24 @@ class QueryBuilder<T> {
     return this;
   }
 
-  filter(filterObj: Record<string, string> | null) {
-    let queryObj = { ...this.query };
-    if (!filterObj) {
-      const excludeFields = ['search', 'page', 'limit', 'sort', 'fields'];
-      excludeFields.forEach((field) => delete queryObj[field]);
-    } else {
-      queryObj = { [filterObj[0]]: filterObj[1] };
-    }
-    this.modelQuery = this.modelQuery.find(queryObj);
+  filter() {
+    const queryObj = { ...this.query }; // copy
+
+    // Filtering
+    const excludeFields = ['search', 'sortOrder', 'sortBy', 'page', 'fields'];
+    excludeFields.forEach((el) => delete queryObj[el]);
+    this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
 
     return this;
   }
 
   sort() {
     const sortOrder = this?.query?.sortOrder as string;
-    const joinBy = sortOrder === 'desc' ? ' -' : '';
+    const joinBy = sortOrder === 'desc' ? '-' : '';
     const sort =
-      (this?.query?.sort as string).split(',').join(` ${joinBy}`) ||
+      (this?.query?.sort as string)?.split(',').join(` ${joinBy}`) ||
       `${joinBy}createdAt`;
+
     this.modelQuery = this.modelQuery.sort(sort);
     return this;
   }
