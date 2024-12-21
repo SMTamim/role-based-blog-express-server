@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { HomeRoutes } from '../modules/home/home.route';
 import { AuthRoutes } from '../modules/auth/auth.route';
 import { AdminRoutes } from '../modules/admin/admin.route';
+import { BlogRoutes } from '../modules/blog/blog.route';
 
 const router = Router();
 
@@ -23,6 +24,10 @@ const moduleRoutes = [
   {
     path: `${apiPrefix}/admin`,
     route: AdminRoutes,
+  },
+  {
+    path: `${apiPrefix}/blogs`,
+    route: BlogRoutes,
   },
 ];
 

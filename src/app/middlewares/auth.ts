@@ -14,7 +14,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
       token,
       config.jwt_access_secret as string,
     ) as JwtPayload;
-    const { email, role, iat } = decoded;
+    const { email, role } = decoded;
     const user = await User.isUserExistByEmail(email);
     if (!user) {
       throw new AppError(httpStatus.UNAUTHORIZED, 'Invalid access token!');
@@ -23,19 +23,13 @@ const auth = (...requiredRoles: TUserRole[]) => {
       throw new AppError(httpStatus.UNAUTHORIZED, 'Invalid access token!');
     }
     if (user.isBlocked) {
-      throw new AppError(httpStatus.UNAUTHORIZED, 'You have been blocked');
-    }
-    if (user.passwordUpdatedAt && iat) {
-      const passwordChangedTime = user.passwordUpdatedAt.getTime();
-      if (passwordChangedTime > iat) {
-        throw new AppError(
-          httpStatus.UNAUTHORIZED,
-          'Password changed, please login again',
-        );
-      }
+      throw new AppError(httpStatus.UNAUTHORIZED, 'You have been blocked!!');
     }
     if (!requiredRoles.includes(role)) {
-      throw new AppError(httpStatus.FORBIDDEN, 'You are not allowed to access');
+      throw new AppError(
+        httpStatus.FORBIDDEN,
+        'You are not allowed to access this route!!',
+      );
     }
     req.user = decoded as JwtPayload;
     next();
