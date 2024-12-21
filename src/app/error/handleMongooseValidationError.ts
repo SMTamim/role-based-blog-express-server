@@ -16,7 +16,7 @@ const handleMongooseValidationError = (
   return {
     statusCode: 400,
     message: 'Validation Error',
-    errorSources,
+    error: errorSources,
     stack: config.NODE_ENV === 'development' ? error.stack : undefined,
   };
 };

@@ -13,7 +13,7 @@ const handleDuplicateError = (error: Error): TGenericErrorResponse => {
   return {
     statusCode: 400,
     message: 'DuplicateError',
-    errorSources,
+    error: errorSources,
     stack: config.NODE_ENV === 'development' ? error.stack : null,
   };
 };

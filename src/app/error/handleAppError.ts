@@ -7,7 +7,7 @@ const handleAppError = (error: AppError): TGenericErrorResponse => {
     statusCode: error.statusCode,
     message: error.message,
     stack: config.NODE_ENV === 'development' ? error.stack : null,
-    errorSources: [],
+    error: [],
   };
 };
 

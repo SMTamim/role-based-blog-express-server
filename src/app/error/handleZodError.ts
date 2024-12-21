@@ -12,8 +12,8 @@ const handleZodError = (error: ZodError): TGenericErrorResponse => {
 
   return {
     statusCode: 400,
-    message: 'Validation Error',
-    errorSources,
+    message: 'Zod Validation Error',
+    error: errorSources,
     stack: config.NODE_ENV === 'development' ? error.stack : undefined,
   };
 };

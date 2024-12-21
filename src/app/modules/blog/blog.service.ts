@@ -6,11 +6,12 @@ import httpStatus from 'http-status';
 import { User } from '../user/user.model';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { blogSearchAbleFields } from './blog.constant';
+import NotFoundError from '../../error/NotFoundError';
 
 const createBlogIntoDB = async (userPayload: JwtPayload, payload: TBlog) => {
   const user = await User.findOne({ email: userPayload.email });
   if (!user) {
-    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+    throw new NotFoundError('User');
   }
   payload.author = user._id;
   const blog = await Blog.create(payload);
@@ -48,7 +49,7 @@ const updateBlogIntoDB = async (
   payload: Pick<TBlog, 'title' | 'content'>,
 ) => {
   const blog = await Blog.isBlogExist(blogId);
-  if (!blog) throw new AppError(httpStatus.NOT_FOUND, 'Blog not found');
+  if (!blog) throw new NotFoundError('Blog');
 
   const isOwner = await Blog.blogBelongsToUser(
     blog.author.toString(),
@@ -66,7 +67,7 @@ const updateBlogIntoDB = async (
     runValidators: true,
   }).populate('author');
 
-  if (!updatedBlog) throw new AppError(httpStatus.NOT_FOUND, 'Blog not found');
+  if (!updatedBlog) throw new NotFoundError('Blog');
 
   return {
     _id: updatedBlog._id,
@@ -78,11 +79,7 @@ const updateBlogIntoDB = async (
 
 const deleteBlogFromDB = async (user: JwtPayload, blogId: string) => {
   const blog = await Blog.isBlogExist(blogId);
-  if (!blog)
-    throw new AppError(
-      httpStatus.NOT_FOUND,
-      'Blog not found or already deleted!',
-    );
+  if (!blog) throw new NotFoundError('Blog');
 
   if (user.role !== 'admin') {
     const isOwner = await Blog.blogBelongsToUser(

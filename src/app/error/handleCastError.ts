@@ -15,8 +15,8 @@ const handleCastError = (
   const statusCode = 400;
   return {
     statusCode,
-    message: 'Invalid ID',
-    errorSources,
+    message: 'Validation Error',
+    error: errorSources,
     stack: config.NODE_ENV === 'development' ? error.stack : null,
   };
 };
