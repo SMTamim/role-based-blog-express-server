@@ -22,6 +22,7 @@ const userSchema = new Schema<TUser>(
     role: {
       type: String,
       required: true,
+      default: 'user',
     },
     isBlocked: {
       type: Boolean,
@@ -41,11 +42,6 @@ const userSchema = new Schema<TUser>(
   },
 );
 
-/**
- * A static method on the User model that checks if a user with the given ID already exists.
- * @param id - The ID of the user to check.
- * @returns The user document if the user exists, otherwise null.
- */
 userSchema.statics.isUserExist = async function (
   id: string,
 ): Promise<TUser | null> {
@@ -54,11 +50,19 @@ userSchema.statics.isUserExist = async function (
   return user;
 };
 
+userSchema.statics.isUserExistByEmail = async function (
+  email: string,
+): Promise<TUser | null> {
+  // Find the user by their ID
+  const user = await this.findOne({ email });
+  return user;
+};
+
 // hash the user password before saving when creating new user
 userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(
     this.password,
-    config.bcrypt_salt_round as string,
+    Number(config.bcrypt_salt_round),
   );
   next();
 });

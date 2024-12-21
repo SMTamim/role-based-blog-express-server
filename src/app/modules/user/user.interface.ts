@@ -14,4 +14,5 @@ export interface TUser {
 
 export interface TUserModel extends Model<TUser> {
   isUserExist(id: string): Promise<TUser | null>;
+  isUserExistByEmail(email: string): Promise<TUser | null>;
 }

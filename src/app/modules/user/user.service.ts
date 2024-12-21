@@ -3,8 +3,16 @@ import AppError from '../../error/AppError';
 import { TUser } from './user.interface';
 import { User } from './user.model';
 
+// creates a new user to database
 const createUserIntoDB = async (payload: TUser) => {
+  const userExists = await User.isUserExistByEmail(payload.email);
+  if (userExists) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'User already exists');
+  }
   const result = await User.create(payload);
+  if (result) {
+    return await User.findById(result._id).select('name email');
+  }
   return result;
 };
 

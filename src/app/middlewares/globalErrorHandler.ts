@@ -40,10 +40,9 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
       message: err?.message,
     };
   }
-  const { statusCode, ...simplifiedErrorWithoutStatusCode } = simplifiedError;
-  res.status(statusCode).json({
+  res.status(simplifiedError.statusCode).json({
     success: false,
-    ...simplifiedErrorWithoutStatusCode,
+    ...simplifiedError,
   });
 };
 

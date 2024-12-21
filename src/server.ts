@@ -18,6 +18,7 @@ const main = () => {
 main();
 
 process.on('unhandledRejection', () => {
+  // console.error('Unhandled Rejection at:', promise, 'reason:', reason);
   if (server) {
     server.close(() => {
       process.exit(1);
@@ -27,6 +28,7 @@ process.on('unhandledRejection', () => {
   }
 });
 
-process.on('uncaughtException', () => {
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
   process.exit(1);
 });
