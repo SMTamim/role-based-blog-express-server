@@ -6,7 +6,7 @@ An Express application with TypeScript and Express, integrating MongoDB with Mon
 
 ---
 
-**_Live project link:_** https://pending/
+**_Live project link:_** https://role-based-blog-express-server.vercel.app
 
 ### **Project Setup:**
 
