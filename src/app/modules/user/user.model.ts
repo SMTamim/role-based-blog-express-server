@@ -50,12 +50,34 @@ userSchema.statics.isUserExist = async function (
   return user;
 };
 
+userSchema.statics.isUserBlocked = async function (
+  userId: string,
+): Promise<boolean> {
+  const user = await this.findById(userId);
+  return user.isBlocked;
+};
+
+userSchema.statics.isUserDeleted = async function (
+  userId: string,
+): Promise<boolean> {
+  const user = await this.findById(userId);
+  return user.isDeleted;
+};
+
 userSchema.statics.isUserExistByEmail = async function (
   email: string,
 ): Promise<TUser | null> {
   // Find the user by their ID
-  const user = await this.findOne({ email });
+  const user = await this.findOne({ email }).select('+password');
   return user;
+};
+
+userSchema.statics.comparePassword = async function (
+  password: string,
+  hashedPassword: string,
+): Promise<boolean> {
+  // Find the user by their ID
+  return await bcrypt.compare(password, hashedPassword);
 };
 
 // hash the user password before saving when creating new user

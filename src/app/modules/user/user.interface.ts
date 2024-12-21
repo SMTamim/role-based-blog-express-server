@@ -15,4 +15,7 @@ export interface TUser {
 export interface TUserModel extends Model<TUser> {
   isUserExist(id: string): Promise<TUser | null>;
   isUserExistByEmail(email: string): Promise<TUser | null>;
+  comparePassword(password: string, hashedPassword: string): Promise<boolean>;
+  isUserBlocked(userId: string): Promise<boolean>;
+  isUserDeleted(userId: string): Promise<boolean>;
 }
