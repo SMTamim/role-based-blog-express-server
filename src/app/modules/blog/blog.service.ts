@@ -76,8 +76,36 @@ const updateBlogIntoDB = async (
   };
 };
 
+const deleteBlogFromDB = async (user: JwtPayload, blogId: string) => {
+  const blog = await Blog.isBlogExist(blogId);
+  if (!blog)
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'Blog not found or already deleted!',
+    );
+
+  if (user.role !== 'admin') {
+    const isOwner = await Blog.blogBelongsToUser(
+      blog.author.toString(),
+      user.email,
+    );
+    if (!isOwner) {
+      throw new AppError(
+        httpStatus.UNAUTHORIZED,
+        "You don't have permission to edit this blog",
+      );
+    }
+  }
+  await Blog.findByIdAndUpdate(
+    blogId,
+    { isDeleted: true },
+    { new: true, runValidators: true },
+  );
+};
+
 export const BlogServices = {
   createBlogIntoDB,
   fetchAllBlogsFromDB,
   updateBlogIntoDB,
+  deleteBlogFromDB,
 };

@@ -31,13 +31,20 @@ const blogSchema = new Schema<TBlog>(
   },
 );
 
+// to exclude deleted blogs
+blogSchema.pre('find', function (next) {
+  this.where({ isDeleted: false });
+  next();
+});
+
 blogSchema.statics.isBlogExist = async function (
   id: string,
 ): Promise<TBlog | null> {
   // Find the user by their ID
-  const blog = await this.findById(id);
+  const blog = await this.findOne({ _id: id, isDeleted: false });
   return blog;
 };
+
 blogSchema.statics.blogBelongsToUser = async function (
   blogUserId: string,
   userEmail: string,
